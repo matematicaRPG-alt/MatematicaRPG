@@ -103,6 +103,7 @@
     }
 
     input[type="text"],
+    input[type="password"],
     input[type="file"],
     textarea,
     select {
@@ -117,6 +118,7 @@
     }
 
     input[type="text"]:focus,
+    input[type="password"]:focus,
     input[type="file"]:focus,
     textarea:focus,
     select:focus {
@@ -476,6 +478,18 @@
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="form-group">
+          <label for="senha">Senha (proteção de conta)</label>
+          <input type="password" id="senha" placeholder="Digite uma senha segura..." maxlength="20">
+        </div>
+
+        <div class="form-group">
+          <label for="confirmarSenha">Confirmar Senha</label>
+          <input type="password" id="confirmarSenha" placeholder="Confirme sua senha..." maxlength="20">
+        </div>
+      </div>
+
       <div class="form-row full">
         <div class="form-group">
           <label>Classe do Personagem</label>
@@ -586,16 +600,13 @@
     let profissaoSelecionada = '';
 
     function selecionarProfissao(nome, elemento) {
-      // Remove seleção anterior
       document.querySelectorAll('.profissao-card').forEach(el => {
         el.classList.remove('selecionado');
       });
 
-      // Adiciona seleção nova
       elemento.classList.add('selecionado');
       profissaoSelecionada = nome;
 
-      // Atualiza stats baseado na profissão
       atualizarStats();
     }
 
@@ -614,7 +625,6 @@
         el.classList.add('selecionado');
       }
 
-      // Atualiza contador
       document.getElementById('contador').innerText = `Escolha: ${itensSelecionados.length}/2`;
     }
 
@@ -679,11 +689,12 @@
 
     function criar() {
       let nome = document.getElementById('nome').value.trim();
+      let senha = document.getElementById('senha').value.trim();
+      let confirmarSenha = document.getElementById('confirmarSenha').value.trim();
       let desc = document.getElementById('desc').value.trim();
       let foto = document.getElementById('preview').innerHTML.includes('img') ? 
         document.getElementById('preview').querySelector('img').src : '';
 
-      // Validações
       if (nome === "") {
         mostrarMensagem('Digite um nome para seu personagem!', 'erro');
         return;
@@ -691,6 +702,21 @@
 
       if (nome.length < 3) {
         mostrarMensagem('Nome muito curto! Mínimo 3 caracteres', 'erro');
+        return;
+      }
+
+      if (senha === "") {
+        mostrarMensagem('Digite uma senha!', 'erro');
+        return;
+      }
+
+      if (senha.length < 4) {
+        mostrarMensagem('Senha deve ter no mínimo 4 caracteres!', 'erro');
+        return;
+      }
+
+      if (senha !== confirmarSenha) {
+        mostrarMensagem('As senhas não coincidem!', 'erro');
         return;
       }
 
@@ -704,38 +730,37 @@
         return;
       }
 
-      // Verifica nome repetido
       let existente = localStorage.getItem("personagem_nome");
       if (existente === nome) {
         mostrarMensagem('Esse nome já está sendo usado!', 'erro');
         return;
       }
 
-      // Mostra loading
       document.getElementById('load').style.display = 'block';
 
       setTimeout(() => {
-        // Salva no localStorage
         localStorage.setItem("personagem_nome", nome);
+        localStorage.setItem("personagem_senha", senha);
         localStorage.setItem("personagem_desc", desc);
         localStorage.setItem("personagem_foto", foto);
         localStorage.setItem("personagem_itens", JSON.stringify(itensSelecionados));
         localStorage.setItem("personagem_classe", profissaoSelecionada);
         localStorage.setItem("personagem_nivel", "1");
         localStorage.setItem("personagem_exp", "0");
+        localStorage.setItem("personagem_hp", "100");
+        localStorage.setItem("personagem_energia", "500");
+        localStorage.setItem("personagem_xp", "0");
         localStorage.setItem("personagem_criado", new Date().toLocaleString('pt-BR'));
 
-        // Salva stats iniciais
         const stats = {
-          'Guerreiro': { vida: 120, ataque: 20, defesa: 15 },
-          'Mago': { vida: 80, ataque: 25, defesa: 8 },
-          'Arqueiro': { vida: 100, ataque: 22, defesa: 10 },
-          'Clérigo': { vida: 110, ataque: 15, defesa: 12 }
+          'Guerreiro': { vida: 120, ataque: 20, defesa: 15, maxHp: 120 },
+          'Mago': { vida: 80, ataque: 25, defesa: 8, maxHp: 80 },
+          'Arqueiro': { vida: 100, ataque: 22, defesa: 10, maxHp: 100 },
+          'Clérigo': { vida: 110, ataque: 15, defesa: 12, maxHp: 110 }
         };
         const stat = stats[profissaoSelecionada];
         localStorage.setItem("personagem_stats", JSON.stringify(stat));
 
-        // Redireciona
         window.location.href = "index.html";
       }, 1500);
     }
@@ -744,7 +769,6 @@
       window.location.href = "index.html";
     }
 
-    // Atualiza contador ao carregar
     document.getElementById('contador').innerText = `Escolha: ${itensSelecionados.length}/2`;
   </script>
 
