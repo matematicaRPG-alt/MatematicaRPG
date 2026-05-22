@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura - Matemática RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f2c 0%, #1a1f4c 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #f5c542;
+            text-shadow: 0 0 20px rgba(245, 197, 66, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .inimigo-intro {
+            background: rgba(20, 25, 50, 0.8);
+            border: 2px solid #f5c542;
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .inimigo-descricao {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .inimigo-descricao h2 {
+            font-size: 2em;
+            color: #f5c542;
+            margin-bottom: 15px;
+        }
+
+        .inimigo-descricao p {
+            font-size: 1.1em;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .botoes-acao {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-falar {
+            background: linear-gradient(135deg, #00cc66 0%, #00a850 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 204, 102, 0.3);
+        }
+
+        .btn-falar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 204, 102, 0.5);
+        }
+
+        .btn-voltar {
+            background-color: #141932;
+            color: #f5c542;
+            border: 2px solid #f5c542;
+        }
+
+        .btn-voltar:hover {
+            background-color: #f5c542;
+            color: black;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚔️ INÍCIO DA AVENTURA</h1>
+        </div>
+
+        <div class="inimigo-intro">
+            <div class="inimigo-descricao" id="descricao"></div>
+            <div class="botoes-acao">
+                <button class="btn-falar" onclick="iniciarCombate()">⚔️ Falar com <span id="nomeBotao"></span></button>
+                <button class="btn-voltar" onclick="voltarInicio()">← Voltar ao Início</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inimigos = [
+            {
+                id: 1,
+                nome: "Goblin Matemático",
+                emoji: "🟢",
+                descricao: "Um pequeno goblin que domina a arte dos números! Ele é rápido e esperto, sempre pronto para um desafio matemático.",
+                hp: 30,
+                ataque: 5,
+                imagen: "🟢"
+            },
+            {
+                id: 2,
+                nome: "Orc dos Cálculos",
+                emoji: "💚",
+                descricao: "Um orc musculoso que treinou suas habilidades matemáticas por anos. Suas contas são poderosas e precisas!",
+                hp: 50,
+                ataque: 8,
+                imagen: "💚"
+            },
+            {
+                id: 3,
+                nome: "Elfo Sábio",
+                emoji: "🧝",
+                descricao: "Um antigo elfo com séculos de conhecimento matemático. Suas equações são complexas e desafiadoras.",
+                hp: 40,
+                ataque: 7,
+                imagen: "🧝"
+            },
+            {
+                id: 4,
+                nome: "Troll da Álgebra",
+                emoji: "👹",
+                descricao: "Um troll gigante que vive sob a ponte dos problemas matemáticos. Trate-o com respeito!",
+                hp: 60,
+                ataque: 10,
+                imagen: "👹"
+            },
+            {
+                id: 5,
+                nome: "Bruxa Numérica",
+                emoji: "🧙‍♀️",
+                descricao: "Uma bruxa antiga que lançou feitiços matemáticos por séculos. Seus números são mágicos e perigosos.",
+                hp: 45,
+                ataque: 9,
+                imagen: "🧙‍♀️"
+            },
+            {
+                id: 6,
+                nome: "Dragão dos Números",
+                emoji: "🐉",
+                descricao: "Um dragão vermelho que guarda os segredos da matemática avançada. Ele é forte e muito inteligente.",
+                hp: 70,
+                ataque: 12,
+                imagen: "🐉"
+            }
+        ];
+
+        const bossFinal = {
+            id: 7,
+            nome: "Archmage Infinito",
+            emoji: "✨",
+            descricao: "O grande Archmage que domina todos os números do universo. Ele é o teste final para se tornar um verdadeiro campeão matemático! Você tem apenas 15 SEGUNDOS para responder!",
+            hp: 100,
+            ataque: 15,
+            imagen: "✨",
+            tempoLimite: 15
+        };
+
+        // Determinar qual inimigo mostrar
+        const proximoInimigo = localStorage.getItem('proximoInimigo') || '1';
+        let inimigo = inimigos.find(i => i.id == proximoInimigo);
+        
+        if (proximoInimigo == '7') {
+            inimigo = bossFinal;
+        }
+
+        document.getElementById('descricao').innerHTML = `
+            <div style="font-size: 5em; margin-bottom: 20px;">${inimigo.imagen}</div>
+            <h2>${inimigo.nome}</h2>
+            <p>${inimigo.descricao}</p>
+        `;
+
+        document.getElementById('nomeBotao').textContent = inimigo.nome;
+
+        function iniciarCombate() {
+            localStorage.setItem('inimigo', JSON.stringify(inimigo));
+            window.open('combate.html', '_blank');
+        }
+
+        function voltarInicio() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
