@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combate - Matemática RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f2c 0%, #1a1f4c 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .topo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-stats {
+            background: rgba(20, 25, 50, 0.8);
+            border: 2px solid #f5c542;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-stats h3 {
+            color: #f5c542;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .stat-item {
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 25px;
+            background: #111;
+            border: 2px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-valor {
+            height: 100%;
+            background: linear-gradient(90deg, #00cc66, #00ff88);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .stat-valor.energia {
+            background: linear-gradient(90deg, #ffa500, #ffff00);
+        }
+
+        .inimigo-area {
+            text-align: center;
+            background: rgba(20, 25, 50, 0.8);
+            border: 2px solid #ff4444;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .inimigo-emoji {
+            font-size: 8em;
+            margin-bottom: 10px;
+        }
+
+        .inimigo-info h2 {
+            color: #ff4444;
+            margin-bottom: 10px;
+        }
+
+        .inimigo-hp {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .questao-area {
+            background: rgba(20, 25, 50, 0.8);
+            border: 2px solid #f5c542;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .questao-titulo {
+            color: #f5c542;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .questao-texto {
+            background: rgba(245, 197, 66, 0.1);
+            border: 1px solid #f5c542;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .opcoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .opcao {
+            background: #141932;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .opcao:hover {
+            border-color: #f5c542;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 197, 66, 0.2);
+        }
+
+        .opcao.correta {
+            background: linear-gradient(135deg, #00cc66 0%, #00a850 100%);
+            border-color: #00cc66;
+            color: black;
+        }
+
+        .opcao.incorreta {
+            background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
+            border-color: #ff4444;
+            color: white;
+        }
+
+        .tempo-restante {
+            text-align: center;
+            font-size: 1.3em;
+            color: #f5c542;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .tempo-restante.critico {
+            color: #ff4444;
+            animation: piscar 0.5s infinite;
+        }
+
+        @keyframes piscar {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        .resultado {
+            text-align: center;
+            background: rgba(20, 25, 50, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .resultado.visivel {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .resultado.acerto {
+            border: 2px solid #00cc66;
+        }
+
+        .resultado.erro {
+            border: 2px solid #ff4444;
+        }
+
+        .resultado h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .resultado.acerto h3 {
+            color: #00ff88;
+        }
+
+        .resultado.erro h3 {
+            color: #ff6666;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        button.proxima {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f5c542 0%, #d4a017 100%);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button.proxima:hover {
+            transform: translateY(-2px);
+        }
+
+        .foto-personagem {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #333, #111);
+            border: 3px solid #f5c542;
+            margin: 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .foto-personagem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topo">
+            <div class="card-stats">
+                <h3>👤 Seu Personagem</h3>
+                <div class="foto-personagem" id="fotoPersonagem"></div>
+                <div id="nomePersonagem" style="margin: 10px 0; font-size: 1.2em; color: #f5c542;"></div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">❤️ Vida</div>
+                    <div class="stat-bar">
+                        <div class="stat-valor" id="barra-hp" style="width: 100%;">100/100</div>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">⚡ Energia</div>
+                    <div class="stat-bar">
+                        <div class="stat-valor energia" id="barra-energia" style="width: 100%;">500/500</div>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">✨ XP</div>
+                    <div style="color: #f5c542; font-weight: bold;" id="xp-valor">0</div>
+                </div>
+            </div>
+
+            <div class="card-stats">
+                <h3>⚔️ Inimigo</h3>
+                <div id="nomeInimigo" style="margin: 10px 0; font-size: 1.2em; color: #ff4444;"></div>
+                
+                <div class="stat-item">
+                    <div class="stat-label">❤️ Vida</div>
+                    <div class="stat-bar">
+                        <div class="stat-valor" id="barra-inimigo" style="width: 100%; background: linear-gradient(90deg, #ff4444, #ff6666);">30/30</div>
+                    </div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-label">⚔️ Ataque</div>
+                    <div style="color: #ff4444; font-weight: bold;" id="ataque-inimigo">5</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="inimigo-area">
+            <div class="inimigo-emoji" id="inimigoEmoji">🟢</div>
+            <div class="inimigo-info">
+                <h2 id="inimigoNomeGrande">Goblin Matemático</h2>
+            </div>
+            <div class="inimigo-hp">
+                <div style="color: #aaa;">Prepare-se para o combate!</div>
+            </div>
+        </div>
+
+        <div class="tempo-restante" id="tempoRestante"></div>
+
+        <div class="questao-area">
+            <div class="questao-titulo">🧮 Resolva a questão para atacar!</div>
+            <div class="questao-texto" id="questaoTexto">Quanto é 2 + 2?</div>
+            <div class="opcoes" id="opcoes"></div>
+        </div>
+
+        <div class="resultado" id="resultado">
+            <h3 id="resultadoTexto">Acerto!</h3>
+            <p id="resultadoDescricao">Você atacou o inimigo!</p>
+            <button class="proxima" onclick="proximaRodada()">Continuar</button>
+        </div>
+    </div>
+
+    <script>
+        let personagem = JSON.parse(localStorage.getItem('character') || '{}');
+        let inimigo = JSON.parse(localStorage.getItem('inimigo') || '{}');
+        let hpPersonagem = parseInt(localStorage.getItem('personagem_hp') || '100');
+        let energiaPersonagem = parseInt(localStorage.getItem('personagem_energia') || '500');
+        let xpPersonagem = parseInt(localStorage.getItem('personagem_xp') || '0');
+        
+        let hpInimigo = inimigo.hp || 30;
+        let questaoRespondida = false;
+        let tempoRestante = inimigo.tempoLimite || 30;
+        let intervaloTempo = null;
+
+        // Dados de personagem do localStorage
+        const nomePersonagem = localStorage.getItem('personagem_nome') || 'Personagem';
+        const fotoPersonagem = localStorage.getItem('personagem_foto') || '';
+        const stats = JSON.parse(localStorage.getItem('personagem_stats') || '{}');
+
+        document.getElementById('nomePersonagem').textContent = nomePersonagem;
+        document.getElementById('nomeInimigo').textContent = inimigo.nome;
+        document.getElementById('inimigoEmoji').textContent = inimigo.imagen;
+        document.getElementById('inimigoNomeGrande').textContent = inimigo.nome;
+        document.getElementById('ataque-inimigo').textContent = inimigo.ataque;
+
+        if (fotoPersonagem) {
+            document.getElementById('fotoPersonagem').innerHTML = `<img src="${fotoPersonagem}" alt="Personagem">`;
+        } else {
+            document.getElementById('fotoPersonagem').textContent = '👤';
+        }
+
+        // Gerar questão matemática
+        function gerarQuestao() {
+            const tipos = [
+                { op: '+', label: 'soma' },
+                { op: '-', label: 'subtração' },
+                { op: '*', label: 'multiplicação' },
+                { op: '/', label: 'divisão' }
+            ];
+
+            const tipo = tipos[Math.floor(Math.random() * tipos.length)];
+            let a, b, resultado;
+
+            if (tipo.op === '+') {
+                a = Math.floor(Math.random() * 50) + 1;
+                b = Math.floor(Math.random() * 50) + 1;
+                resultado = a + b;
+            } else if (tipo.op === '-') {
+                a = Math.floor(Math.random() * 50) + 20;
+                b = Math.floor(Math.random() * 20) + 1;
+                resultado = a - b;
+            } else if (tipo.op === '*') {
+                a = Math.floor(Math.random() * 15) + 1;
+                b = Math.floor(Math.random() * 15) + 1;
+                resultado = a * b;
+            } else {
+                a = Math.floor(Math.random() * 10) + 2;
+                b = Math.floor(Math.random() * 10) + 1;
+                resultado = a * b;
+                const divisor = Math.floor(Math.random() * a) + 1;
+                return {
+                    questao: `${resultado} ${tipo.op} ${divisor}`,
+                    resposta: Math.floor(resultado / divisor)
+                };
+            }
+
+            return {
+                questao: `${a} ${tipo.op} ${b}`,
+                resposta: resultado
+            };
+        }
+
+        let questaoAtual = gerarQuestao();
+
+        function gerarOpcoes() {
+            const opcoes = [questaoAtual.resposta];
+            
+            while (opcoes.length < 4) {
+                const errada = questaoAtual.resposta + (Math.floor(Math.random() * 20) - 10);
+                if (!opcoes.includes(errada) && errada > 0) {
+                    opcoes.push(errada);
+                }
+            }
+
+            opcoes.sort(() => Math.random() - 0.5);
+            return opcoes;
+        }
+
+        function mostrarQuestao() {
+            document.getElementById('questaoTexto').textContent = questaoAtual.questao;
+            const opcoes = gerarOpcoes();
+            const container = document.getElementById('opcoes');
+            container.innerHTML = '';
+
+            opcoes.forEach(opcao => {
+                const div = document.createElement('div');
+                div.className = 'opcao';
+                div.textContent = opcao;
+                div.onclick = () => responderQuestao(opcao === questaoAtual.resposta);
+                container.appendChild(div);
+            });
+
+            iniciarContagem();
+        }
+
+        function iniciarContagem() {
+            tempoRestante = inimigo.tempoLimite || 30;
+            atualizarTempo();
+            
+            intervaloTempo = setInterval(() => {
+                tempoRestante--;
+                atualizarTempo();
+                
+                if (tempoRestante <= 0) {
+                    clearInterval(intervaloTempo);
+                    responderQuestao(false);
+                }
+            }, 1000);
+        }
+
+        function atualizarTempo() {
+            const elemento = document.getElementById('tempoRestante');
+            if (tempoRestante <= 5) {
+                elemento.classList.add('critico');
+                elemento.textContent = `⏰ Tempo: ${tempoRestante}s`;
+            } else {
+                elemento.classList.remove('critico');
+                elemento.textContent = `⏰ Tempo: ${tempoRestante}s`;
+            }
+        }
+
+        function responderQuestao(acerto) {
+            clearInterval(intervaloTempo);
+            questaoRespondida = true;
+            const resultado = document.getElementById('resultado');
+            const resultadoDiv = document.getElementById('resultado');
+
+            if (acerto) {
+                hpInimigo -= stats.ataque || 15;
+                resultado.className = 'resultado visivel acerto';
+                document.getElementById('resultadoTexto').textContent = '✨ Acerto!';
+                document.getElementById('resultadoDescricao').textContent = `Você atacou o ${inimigo.nome} com ${stats.ataque || 15} de dano!`;
+                xpPersonagem += 10;
+            } else {
+                hpPersonagem -= inimigo.ataque;
+                resultado.className = 'resultado visivel erro';
+                document.getElementById('resultadoTexto').textContent = '❌ Erro!';
+                document.getElementById('resultadoDescricao').textContent = `${inimigo.nome} contra-atacou! Você perdeu ${inimigo.ataque} de vida!`;
+            }
+
+            energiaPersonagem -= 50;
+            atualizarBars();
+        }
+
+        function atualizarBars() {
+            const hpMax = stats.maxHp || 100;
+            const percentualHP = (Math.max(0, hpPersonagem) / hpMax) * 100;
+            const percentualEnergia = (Math.max(0, energiaPersonagem) / 500) * 100;
+
+            document.getElementById('barra-hp').style.width = percentualHP + '%';
+            document.getElementById('barra-hp').textContent = `${Math.max(0, hpPersonagem)}/${hpMax}`;
+
+            document.getElementById('barra-energia').style.width = percentualEnergia + '%';
+            document.getElementById('barra-energia').textContent = `${Math.max(0, energiaPersonagem)}/500`;
+
+            document.getElementById('barra-inimigo').style.width = (hpInimigo / inimigo.hp) * 100 + '%';
+            document.getElementById('barra-inimigo').textContent = `${Math.max(0, hpInimigo)}/${inimigo.hp}`;
+
+            document.getElementById('xp-valor').textContent = xpPersonagem;
+        }
+
+        function proximaRodada() {
+            if (hpInimigo <= 0) {
+                derrotouInimigo();
+            } else if (hpPersonagem <= 0) {
+                perdeuCombate();
+            } else {
+                questaoRespondida = false;
+                document.getElementById('resultado').className = 'resultado';
+                mostrarQuestao();
+            }
+        }
+
+        function derrotouInimigo() {
+            let proximoId = inimigo.id + 1;
+            if (proximoId <= 6) {
+                localStorage.setItem('proximoInimigo', proximoId);
+                localStorage.setItem('personagem_xp', xpPersonagem);
+                localStorage.setItem('personagem_energia', energiaPersonagem);
+                window.location.href = 'vitoria.html';
+            } else {
+                localStorage.setItem('personagem_xp', xpPersonagem);
+                localStorage.setItem('personagem_energia', energiaPersonagem);
+                localStorage.setItem('proximoInimigo', '7');
+                window.location.href = 'aventura.html';
+            }
+        }
+
+        function perdeuCombate() {
+            window.location.href = 'derrota.html';
+        }
+
+        atualizarBars();
+        mostrarQuestao();
+    </script>
+</body>
+</html>
