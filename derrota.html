@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Derrota - Matemática RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0f2c 0%, #1a1f4c 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .derrota-container {
+            background: rgba(20, 25, 50, 0.8);
+            border: 3px solid #ff4444;
+            border-radius: 20px;
+            padding: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(255, 68, 68, 0.5);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .titulo-derrota {
+            font-size: 3em;
+            color: #ff6666;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+            margin-bottom: 20px;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .emoji-grande {
+            font-size: 6em;
+            margin: 20px 0;
+        }
+
+        .info-derrota {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .mensagem-derrota {
+            font-size: 1.3em;
+            color: #ff9999;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .botoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-tentar {
+            background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.3);
+        }
+
+        .btn-tentar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 165, 0, 0.5);
+        }
+
+        .btn-menu {
+            background-color: #141932;
+            color: #f5c542;
+            border: 2px solid #f5c542;
+        }
+
+        .btn-menu:hover {
+            background-color: #f5c542;
+            color: black;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="derrota-container">
+            <div class="titulo-derrota">💀 DERROTA! 💀</div>
+            <div class="emoji-grande">😢</div>
+            
+            <div class="info-derrota">
+                <p style="font-size: 1.3em; margin-bottom: 20px;">Você foi derrotado!</p>
+                <div class="mensagem-derrota">
+                    ⚔️ O inimigo foi mais forte desta vez...
+                </div>
+                <p style="color: #aaa; margin-top: 15px;">Você não ganhou XP desta vez, mas pode tentar novamente!</p>
+            </div>
+
+            <div class="botoes">
+                <button class="btn-tentar" onclick="tentarNovamente()">🔄 Tentar Novamente</button>
+                <button class="btn-menu" onclick="voltarMenu()">🏠 Voltar ao Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function tentarNovamente() {
+            window.location.href = 'aventura.html';
+        }
+
+        function voltarMenu() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
