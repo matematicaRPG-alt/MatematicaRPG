@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitória Final - Matemática RPG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a4d 0%, #000000 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .confete {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .vitoria-final-container {
+            background: rgba(20, 25, 50, 0.9);
+            border: 3px solid #f5c542;
+            border-radius: 20px;
+            padding: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(245, 197, 66, 0.8);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .titulo-final {
+            font-size: 3.5em;
+            background: linear-gradient(45deg, #f5c542, #ffff00, #f5c542);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(245, 197, 66, 0.8);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emoji-final {
+            font-size: 7em;
+            margin: 30px 0;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .info-final {
+            background: linear-gradient(135deg, rgba(245, 197, 66, 0.2), rgba(0, 204, 102, 0.2));
+            border: 2px solid #f5c542;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 30px 0;
+        }
+
+        .titulo-info {
+            font-size: 2em;
+            color: #f5c542;
+            margin-bottom: 20px;
+        }
+
+        .recompensa-final {
+            font-size: 1.6em;
+            color: #00ff88;
+            margin: 20px 0;
+            font-weight: bold;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border-left: 4px solid #00ff88;
+            border-radius: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f5c542 0%, #d4a017 100%);
+            color: black;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 10px;
+            font-size: 1.1em;
+            box-shadow: 0 5px 15px rgba(245, 197, 66, 0.3);
+        }
+
+        .botoes {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        button {
+            padding: 18px 40px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-menu {
+            background: linear-gradient(135deg, #f5c542 0%, #d4a017 100%);
+            color: black;
+            box-shadow: 0 8px 25px rgba(245, 197, 66, 0.4);
+        }
+
+        .btn-menu:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 197, 66, 0.6);
+        }
+
+        .stats-finais {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-final {
+            background: rgba(0, 204, 102, 0.1);
+            border: 1px solid #00cc66;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .stat-valor {
+            color: #00ff88;
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="vitoria-final-container">
+            <div class="titulo-final">🏆 VOCÊ É UM CAMPEÃO! 🏆</div>
+            <div class="emoji-final">👑</div>
+            
+            <div class="info-final">
+                <div class="titulo-info">✨ VOCÊ VENCEU O BOSS FINAL! ✨</div>
+                <p style="font-size: 1.2em; margin: 20px 0; color: #f5c542;">
+                    Parabéns! Você derrotou o Archmage Infinito e se tornou o verdadeiro mestre da matemática!
+                </p>
+            </div>
+
+            <div class="stats-finais">
+                <div class="stat-final">
+                    <div class="stat-label">🏅 Nível Final</div>
+                    <div class="stat-valor" id="nivelFinal">1</div>
+                </div>
+                <div class="stat-final">
+                    <div class="stat-label">⭐ XP Total Ganho</div>
+                    <div class="stat-valor" id="xpTotal">500</div>
+                </div>
+                <div class="stat-final">
+                    <div class="stat-label">🎖️ Inimigos Derrotados</div>
+                    <div class="stat-valor">7</div>
+                </div>
+            </div>
+
+            <div class="recompensa-final">
+                💎 RECOMPENSA FINAL: <span id="xpFinal">500</span> XP
+            </div>
+
+            <div style="margin: 30px 0;">
+                <div class="badge">🌟 Mestre da Aritmética</div>
+                <div class="badge">🧮 Sábio dos Números</div>
+                <div class="badge">⚔️ Guerreiro Matemático</div>
+            </div>
+
+            <div class="botoes">
+                <button class="btn-menu" onclick="voltarMenu()">🏠 Voltar ao Menu Principal</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gerar confete
+        function criarConfete() {
+            const colors = ['#f5c542', '#00cc66', '#ff4444', '#00a8ff'];
+            for (let i = 0; i < 50; i++) {
+                const confete = document.createElement('div');
+                confete.className = 'confete';
+                confete.style.left = Math.random() * 100 + '%';
+                confete.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confete.style.animation = `cair ${2 + Math.random() * 2}s linear forwards`;
+                document.body.appendChild(confete);
+
+                setTimeout(() => confete.remove(), 4000);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes cair {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Carregar dados
+        const xpPersonagem = parseInt(localStorage.getItem('personagem_xp') || '0');
+        const nivelPersonagem = parseInt(localStorage.getItem('personagem_nivel') || '1');
+
+        document.getElementById('nivelFinal').textContent = nivelPersonagem;
+        document.getElementById('xpTotal').textContent = xpPersonagem;
+        document.getElementById('xpFinal').textContent = xpPersonagem;
+
+        // Criar confete ao carregar
+        criarConfete();
+        setTimeout(() => criarConfete(), 1000);
+
+        function voltarMenu() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
